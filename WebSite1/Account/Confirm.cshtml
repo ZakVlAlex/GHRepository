@@ -1,0 +1,33 @@
+﻿@{
+    // Задание страницы макета и заголовка страницы
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "Страница подтверждения регистрации";
+
+    string message = "";
+    var confirmationToken = Request["confirmationCode"];
+
+    WebSecurity.Logout();
+    if (!confirmationToken.IsEmpty()) {
+        if (WebSecurity.ConfirmAccount(confirmationToken)) {
+            message = "Регистрация завершена! Чтобы войти на сайт, щелкните вкладку &quot;Вход&quot;.";
+        } else {
+            message = "Не удалось подтвердить данные регистрации";
+        }
+    }
+}
+
+@if (!@message.IsEmpty()) {
+    <p>@message</p>
+} else {
+    <form method="post" action="">
+        <fieldset>
+            <legend>Код подтверждения</legend>
+            <label for="confirmationCode">
+                Введите код подтверждения, отправленный по электронной почте, и 
+                затем нажмите кнопку <em>Подтвердить</em>.
+            </label>
+            <input type="text" id="confirmationCode" name="confirmationCode" title="Код подтверждения" />
+            <input type="submit" value="Подтвердить" title="Подтвердить регистрацию" />
+        </fieldset>
+    </form>
+}
